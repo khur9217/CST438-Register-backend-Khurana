@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cst438.domain.CourseDTOG;
+import com.cst438.domain.CourseRepository;
 import com.cst438.domain.Enrollment;
 import com.cst438.domain.EnrollmentDTO;
 import com.cst438.domain.EnrollmentRepository;
+import com.cst438.domain.StudentRepository;
 
 
 public class GradebookServiceMQ extends GradebookService {
@@ -20,6 +22,12 @@ public class GradebookServiceMQ extends GradebookService {
 	
 	@Autowired
 	EnrollmentRepository enrollmentRepository;
+	
+	@Autowired
+	StudentRepository studentRepository;
+	
+	@Autowired
+	CourseRepository courseRepository;
 	
 	@Autowired
 	Queue gradebookQueue;
@@ -32,7 +40,7 @@ public class GradebookServiceMQ extends GradebookService {
 	// send message to grade book service about new student enrollment in course
 	@Override
 	public void enrollStudent(String student_email, String student_name, int course_id) {
-		 
+		//No TODO present, was already done? 
 		EnrollmentDTO enrollmentDTO = new EnrollmentDTO(student_email, student_name, course_id);
 		
 		rabbitTemplate.convertAndSend(gradebookQueue.getName(), enrollmentDTO);
@@ -44,7 +52,7 @@ public class GradebookServiceMQ extends GradebookService {
 	@RabbitListener(queues = "registration-queue")
 	public void receive(CourseDTOG courseDTOG) {
 		System.out.println("Receive enrollment :" + courseDTOG);
-
+		//No TODO present, was already done? 
 		// process the list of student grades
 		for (CourseDTOG.GradeDTO g : courseDTOG.grades) {
 			Enrollment e = enrollmentRepository.findByEmailAndCourseId(g.student_email, courseDTOG.course_id);
